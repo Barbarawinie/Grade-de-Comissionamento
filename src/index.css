@@ -164,7 +164,7 @@ input:disabled.ni {
   .commission-grid-header,
   .commission-grid-row {
     display: grid !important;
-    grid-template-columns: 190px repeat(13, 1fr) 76px !important;
+    grid-template-columns: 250px repeat(13, 1fr) 76px !important;
     width: 100% !important;
     min-width: 0 !important;
     page-break-inside: avoid !important;
@@ -180,6 +180,7 @@ input:disabled.ni {
 
   .commission-grid-row {
     border-bottom: 1px solid #E5E0D6 !important;
+    min-height: 30px !important;
   }
 
   .commission-grid-row:nth-child(even) {

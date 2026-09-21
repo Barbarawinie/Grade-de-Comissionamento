@@ -253,7 +253,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                     } hover:bg-[#4A86D9]/5`}
                   >
                     {/* Column: Operadora Name */}
-                    <div className="px-2 py-1 flex items-center gap-1.5 relative">
+                    <div className="px-2 py-1.5 flex items-center gap-1.5 relative overflow-hidden print:overflow-visible">
                       <input
                         id={`operator-name-${originalIndex}`}
                         type="text"
@@ -263,16 +263,18 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                           onUpdateOperator(originalIndex, { name: e.target.value })
                         }
                         placeholder="Nome da Operadora..."
-                        className="ni font-semibold text-[#071B3A] truncate"
+                        className="ni font-semibold text-[#071B3A] truncate print:hidden"
                         title={op.name}
                       />
+                      <span className="hidden print:block font-bold text-[#071B3A] text-[11.5px] leading-tight whitespace-normal break-words">
+                        {op.name}
+                      </span>
                       {hasObs && (
                         <span
                           title={op.obs}
-                          className="flex-shrink-0 cursor-help text-[#E96F5F] hover:text-[#C64A3A] print:text-[9px] print:font-semibold print:text-[#071B3A]"
+                          className="flex-shrink-0 cursor-help text-[#E96F5F] hover:text-[#C64A3A] print:hidden"
                         >
-                          <Info className="w-3.5 h-3.5 print:hidden" />
-                          <span className="hidden print:inline">({op.obs})</span>
+                          <Info className="w-3.5 h-3.5" />
                         </span>
                       )}
                     </div>
@@ -296,10 +298,17 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                               onUpdateOperator(originalIndex, { ps: newPs });
                             }}
                             placeholder={isEditMode ? '0' : '—'}
-                            className={`ci ${
+                            className={`ci print:hidden ${
                               val > 0 ? 'text-[#071B3A] font-semibold' : 'text-[#5E6B7E]/40'
                             }`}
                           />
+                          <span
+                            className={`hidden print:block text-[10.5px] leading-tight text-center ${
+                              val > 0 ? 'font-bold text-[#071B3A]' : 'text-[#9CA3AF]'
+                            }`}
+                          >
+                            {val > 0 ? `${val}%` : '—'}
+                          </span>
                         </div>
                       );
                     })}
@@ -311,7 +320,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                           total
                         )}`}
                       >
-                        {total > 0 ? `${total}%` : op.obs || '0%'}
+                        {total > 0 ? `${total}%` : '0%'}
                       </span>
                     </div>
 
