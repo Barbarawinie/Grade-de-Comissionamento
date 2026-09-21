@@ -9,6 +9,7 @@ interface HeaderProps {
   onOpenSettings: () => void;
   onResetData: () => void;
   onPrintOrExport?: () => void;
+  onExportCSV?: () => void;
   onShareLink?: () => void;
 }
 
@@ -19,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSettings,
   onResetData,
   onPrintOrExport,
+  onExportCSV,
   onShareLink,
 }) => {
   const [copied, setCopied] = useState(false);
@@ -100,15 +102,28 @@ export const Header: React.FC<HeaderProps> = ({
           <span>{isEditMode ? 'Edição Liberada' : 'Atualizado'}</span>
         </div>
 
-        {/* Quick Print/Export */}
+        {/* Quick Print Grade (PDF) */}
         {onPrintOrExport && (
           <button
-            id="header-export-btn"
+            id="header-print-btn"
             onClick={onPrintOrExport}
-            title="Imprimir ou Exportar Grade"
-            className="p-1.5 md:p-2 rounded-xl text-[#5E6B7E] hover:text-[#071B3A] hover:bg-[#071B3A]/5 transition-colors border border-[#EFEAE0]"
+            title="Imprimir ou Salvar Grade deste Segmento em PDF"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 md:py-2 rounded-xl text-[12px] font-semibold text-[#071B3A] bg-white border border-[#EFEAE0] hover:bg-[#071B3A]/5 transition-colors shadow-2xs cursor-pointer"
           >
-            <Printer className="w-4 h-4" />
+            <Printer className="w-3.5 h-3.5 text-[#4A86D9]" />
+            <span className="hidden sm:inline">Imprimir</span>
+          </button>
+        )}
+
+        {/* Quick CSV Export */}
+        {onExportCSV && (
+          <button
+            id="header-export-csv-btn"
+            onClick={onExportCSV}
+            title="Exportar dados deste segmento para CSV (Excel)"
+            className="p-1.5 md:p-2 rounded-xl text-[#5E6B7E] hover:text-[#071B3A] hover:bg-[#071B3A]/5 transition-colors border border-[#EFEAE0] cursor-pointer"
+          >
+            <Download className="w-4 h-4" />
           </button>
         )}
 

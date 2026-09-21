@@ -213,7 +213,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ data, onNavigate }
                   </div>
                 </div>
                 <div className={`mt-3 flex items-center gap-1.5 text-[11.5px] font-semibold ${cat.textColor} group-hover:translate-x-1 transition-all`}>
-                  <span>Ver tabela</span>
+                  <span>Ver e Imprimir</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </div>
               </button>

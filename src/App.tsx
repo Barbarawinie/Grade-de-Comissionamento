@@ -227,10 +227,14 @@ export default function App() {
     }
   };
 
-  // Export current table as CSV or trigger window print
-  const handlePrintOrExport = () => {
+  // Print current segment cleanly
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Export current table as CSV
+  const handleExportCSV = () => {
     if (currentSection === 'dashboard' || currentSection === 'regras') {
-      window.print();
       return;
     }
 
@@ -278,7 +282,8 @@ export default function App() {
           onToggleLock={handleToggleLock}
           onOpenSettings={() => setIsSettingsModalOpen(true)}
           onResetData={handleResetToDefaults}
-          onPrintOrExport={handlePrintOrExport}
+          onPrintOrExport={handlePrint}
+          onExportCSV={currentSection !== 'dashboard' && currentSection !== 'regras' ? handleExportCSV : undefined}
           onShareLink={handleShareLink}
         />
 
@@ -302,6 +307,7 @@ export default function App() {
               onAddOperator={() => handleAddOperator(currentSection)}
               onRemoveOperator={(idx) => handleRemoveOperator(currentSection, idx)}
               onOpenLogin={() => setIsLoginModalOpen(true)}
+              settings={settings}
             />
           )}
 

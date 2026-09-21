@@ -89,3 +89,143 @@ input:disabled.ni {
   pointer-events: none;
   user-select: text;
 }
+
+/* =========================================================
+   PRINT STYLES (Impressão por Segmento / PDF)
+   ========================================================= */
+@media print {
+  @page {
+    size: landscape;
+    margin: 8mm 6mm 8mm 6mm;
+  }
+
+  *, *:before, *:after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #071B3A !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-size: 11px !important;
+  }
+
+  /* Hide screen-only interactive elements */
+  #app-sidebar,
+  header#app-header,
+  #mobile-bottom-nav,
+  #share-success-toast,
+  .no-print,
+  button,
+  input[type="text"]:placeholder-shown,
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  #app-sidebar,
+  header#app-header,
+  #mobile-bottom-nav,
+  #share-success-toast,
+  .no-print,
+  button,
+  .btn-no-print {
+    display: none !important;
+  }
+
+  /* Reset outer containers to occupy full print page */
+  #root,
+  #root > div,
+  main {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  #commission-table-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-only-block {
+    display: block !important;
+  }
+
+  /* Table formatting for clean landscape fit */
+  .commission-grid-header,
+  .commission-grid-row {
+    display: grid !important;
+    grid-template-columns: 190px repeat(13, 1fr) 76px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .commission-grid-header {
+    background-color: #071B3A !important;
+    color: #ffffff !important;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  .commission-grid-row {
+    border-bottom: 1px solid #E5E0D6 !important;
+  }
+
+  .commission-grid-row:nth-child(even) {
+    background-color: #F8F6F0 !important;
+  }
+
+  .commission-grid-row:nth-child(odd) {
+    background-color: #ffffff !important;
+  }
+
+  /* Inputs transformed into crisp print text */
+  input.ci,
+  input.ni {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    height: 28px !important;
+    font-size: 10.5px !important;
+    padding: 0 4px !important;
+  }
+
+  input.ni {
+    font-weight: 700 !important;
+    color: #071B3A !important;
+  }
+
+  input.ci {
+    text-align: center !important;
+    font-weight: 600 !important;
+    color: #071B3A !important;
+  }
+
+  /* Total Badge in Print */
+  .print-total-badge {
+    border: 1px solid #D1D5DB !important;
+    padding: 2px 4px !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+  }
+
+  /* Eliminate shadows & borders that waste ink */
+  .shadow-xs,
+  .shadow-2xs,
+  .shadow-sm,
+  .shadow-md {
+    box-shadow: none !important;
+  }
+}

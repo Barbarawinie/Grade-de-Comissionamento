@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Operator, SectionType } from '../types';
-import { Search, Plus, Trash2, AlertTriangle, FileText, Info } from 'lucide-react';
+import { Operator, SectionType, AppSettings } from '../types';
+import { Search, Plus, Trash2, AlertTriangle, FileText, Info, Printer } from 'lucide-react';
 
 interface CommissionTableProps {
   section: SectionType;
@@ -10,6 +10,7 @@ interface CommissionTableProps {
   onAddOperator: () => void;
   onRemoveOperator: (index: number) => void;
   onOpenLogin: () => void;
+  settings?: AppSettings;
 }
 
 export const CommissionTable: React.FC<CommissionTableProps> = ({
@@ -20,6 +21,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
   onAddOperator,
   onRemoveOperator,
   onOpenLogin,
+  settings,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -62,6 +64,10 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
     return 'bg-[#5E6B7E]/10 text-[#5E6B7E]';
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   // Filter operators by search query
   const filteredOperators = operators.map((op, originalIndex) => ({
     op,
@@ -74,8 +80,35 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
 
   return (
     <div id="commission-table-container" className="space-y-3.5">
-      {/* Table Header Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* PRINT-ONLY OFFICIAL HEADER */}
+      <div className="hidden print:block mb-3 pb-2.5 border-b-2 border-[#071B3A]">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-[17px] font-extrabold text-[#071B3A] tracking-tight uppercase">
+              {settings?.brokerName || 'ARKOS Benefícios & Seguros'}
+            </h1>
+            <p className="text-[10.5px] text-[#5E6B7E] font-medium">
+              {settings?.brokerSubtitle || 'Grade Vigente de Comissionamento para Parceiros e Corretores'}
+            </p>
+          </div>
+          <div className="text-right text-[10px] text-[#5E6B7E] space-y-0.5">
+            <div><strong>Emissão:</strong> {settings?.emissao || '10/01/2025'}</div>
+            <div><strong>Vigência:</strong> {settings?.referencia || '2025/2026'}</div>
+            <div className="text-[#2F9E73] font-bold uppercase tracking-wider">Documento Oficial</div>
+          </div>
+        </div>
+        <div className="mt-2 flex items-center justify-between pt-1.5 border-t border-[#E5E0D6]">
+          <span className="text-[13px] font-bold text-[#071B3A] uppercase tracking-wide">
+            {title}
+          </span>
+          <span className="text-[10.5px] text-[#5E6B7E]">
+            {operators.length} {companyLabel.toLowerCase()}s cadastradas
+          </span>
+        </div>
+      </div>
+
+      {/* Table Header Controls (Screen only) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
         <div className="flex items-center gap-3">
           <h2 className="text-[17px] font-bold text-[#071B3A] font-display tracking-tight">
             {title}
@@ -95,16 +128,27 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={`Buscar ${companyLabel.toLowerCase()}...`}
-              className="text-[12px] pl-8 pr-3 py-1.5 rounded-xl border border-[#EFEAE0] bg-white focus:outline-none focus:border-[#4A86D9] text-[#071B3A] w-48 sm:w-60 shadow-2xs"
+              className="text-[12px] pl-8 pr-3 py-1.5 rounded-xl border border-[#EFEAE0] bg-white focus:outline-none focus:border-[#4A86D9] text-[#071B3A] w-44 sm:w-56 shadow-2xs"
             />
           </div>
+
+          {/* Dedicated Print Button for this Segment */}
+          <button
+            id="print-segment-btn"
+            onClick={handlePrint}
+            title={`Imprimir ou Salvar Grade de ${title} em PDF`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white text-[#071B3A] border border-[#EFEAE0] text-[12px] font-semibold hover:bg-[#071B3A]/5 hover:border-[#071B3A]/20 transition-colors shadow-2xs cursor-pointer"
+          >
+            <Printer className="w-3.5 h-3.5 text-[#4A86D9]" />
+            <span className="hidden sm:inline">Imprimir Grade</span>
+          </button>
 
           {/* If edit mode, button to add operator */}
           {isEditMode ? (
             <button
               id="add-operator-top-btn"
               onClick={onAddOperator}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#4A86D9] text-white text-[12px] font-semibold hover:bg-[#3B73C4] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#4A86D9] text-white text-[12px] font-semibold hover:bg-[#3B73C4] transition-colors shadow-2xs cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Adicionar Linha</span>
@@ -168,10 +212,10 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
       )}
 
       {/* Main Commission Table Card */}
-      <div className="bg-white rounded-2xl border border-[#EFEAE0] shadow-xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#EFEAE0] shadow-xs overflow-hidden print:border-none print:rounded-none">
         <div className="overflow-x-auto">
           {/* Header Row */}
-          <div className="grid grid-cols-[200px_repeat(13,52px)_72px_36px] min-w-[988px] bg-[#071B3A] text-white font-semibold text-[11px] select-none">
+          <div className="commission-grid-header grid grid-cols-[200px_repeat(13,52px)_72px_36px] min-w-[988px] bg-[#071B3A] text-white font-semibold text-[11px] select-none">
             <div className="p-[11px_14px] uppercase tracking-wider text-white/90">
               {companyLabel}
             </div>
@@ -187,7 +231,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
             <div className="p-[11px_4px] text-center text-[#E96F5F] uppercase tracking-wider font-bold">
               TOTAL
             </div>
-            <div className="p-[11px_2px]"></div>
+            <div className="p-[11px_2px] print:hidden"></div>
           </div>
 
           {/* Body Rows */}
@@ -204,7 +248,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                 return (
                   <div
                     key={op.id || originalIndex}
-                    className={`grid grid-cols-[200px_repeat(13,52px)_72px_36px] min-w-[988px] items-center transition-colors group ${
+                    className={`commission-grid-row grid grid-cols-[200px_repeat(13,52px)_72px_36px] min-w-[988px] items-center transition-colors group ${
                       originalIndex % 2 === 0 ? 'bg-white' : 'bg-[#FBF9F5]'
                     } hover:bg-[#4A86D9]/5`}
                   >
@@ -225,9 +269,10 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                       {hasObs && (
                         <span
                           title={op.obs}
-                          className="flex-shrink-0 cursor-help text-[#E96F5F] hover:text-[#C64A3A]"
+                          className="flex-shrink-0 cursor-help text-[#E96F5F] hover:text-[#C64A3A] print:text-[9px] print:font-semibold print:text-[#071B3A]"
                         >
-                          <Info className="w-3.5 h-3.5" />
+                          <Info className="w-3.5 h-3.5 print:hidden" />
+                          <span className="hidden print:inline">({op.obs})</span>
                         </span>
                       )}
                     </div>
@@ -239,7 +284,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                         val !== 0 && val !== undefined && val !== null ? String(val) : '';
 
                       return (
-                        <div key={colIdx} className="px-0.5 py-1">
+                        <div key={colIdx} className="px-0.5 py-1 text-center">
                           <input
                             id={`operator-${originalIndex}-p${colIdx}`}
                             type="text"
@@ -262,7 +307,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                     {/* Column: TOTAL */}
                     <div className="py-1 px-1 flex items-center justify-center">
                       <span
-                        className={`text-[12px] font-extrabold px-1.5 py-0.5 rounded-md text-center block w-full ${getTotalBgColor(
+                        className={`print-total-badge text-[12px] font-extrabold px-1.5 py-0.5 rounded-md text-center block w-full ${getTotalBgColor(
                           total
                         )}`}
                       >
@@ -270,8 +315,8 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
                       </span>
                     </div>
 
-                    {/* Column: Delete / Options */}
-                    <div className="py-1 px-1 flex items-center justify-center">
+                    {/* Column: Delete / Options (Hidden when printing) */}
+                    <div className="py-1 px-1 flex items-center justify-center print:hidden">
                       {isEditMode ? (
                         <button
                           id={`remove-operator-${originalIndex}`}
@@ -293,7 +338,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
 
           {/* Bottom Add Row Section (Always visible when in Edit Mode, matching link!) */}
           {isEditMode && (
-            <div className="p-3 bg-[#FAFAF9] border-t border-dashed border-[#EFEAE0] flex items-center justify-between min-w-[988px]">
+            <div className="p-3 bg-[#FAFAF9] border-t border-dashed border-[#EFEAE0] flex items-center justify-between min-w-[988px] no-print">
               <button
                 id="add-operator-bottom-btn"
                 onClick={onAddOperator}
@@ -311,7 +356,7 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
       </div>
 
       {/* Legend & Notes Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-1 no-print">
         <div className="flex items-center gap-3 text-[11.5px] text-[#5E6B7E]">
           <span className="font-semibold text-[#071B3A]">LEGENDA TOTAL:</span>
           <div className="flex items-center gap-1.5">
@@ -338,6 +383,18 @@ export const CommissionTable: React.FC<CommissionTableProps> = ({
             <span>Alterações salvas automaticamente no navegador e no link</span>
           </div>
         )}
+      </div>
+
+      {/* PRINT-ONLY OFFICIAL FOOTER */}
+      <div className="hidden print:block mt-3 pt-2 border-t border-[#D1D5DB] text-[9.5px] text-[#4B5563]">
+        <div className="flex items-center justify-between">
+          <span>
+            * Comissionamento bruto sujeito às retenções fiscais cabíveis e regras vigentes das operadoras/seguradoras. Documento para conferência interna de parceiros.
+          </span>
+          <span className="font-medium">
+            Impresso em {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
       </div>
     </div>
   );
