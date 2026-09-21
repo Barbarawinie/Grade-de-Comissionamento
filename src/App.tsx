@@ -84,10 +84,42 @@ export default function App() {
       // Synchronize changes to the URL link/hash so sharing or bookmarking reflects exact state
       syncUrlHash(commissionData, settings);
     } catch (e) {
-      console.error('Failed to save commission data', e);
+      console.warn('Failed to save commission data to localStorage', e);
     }
     isFirstRender.current = false;
   }, [commissionData, settings]);
+
+  // Listen for browser navigation / hash change events to dynamically update if a new link is opened
+  useEffect(() => {
+    const handleUrlChange = () => {
+      try {
+        const decoded = decodeStateFromUrl();
+        if (decoded) {
+          if (decoded.data) {
+            setCommissionData((prev) => ({
+              ...prev,
+              ...decoded.data,
+            }));
+          }
+          if (decoded.settings) {
+            setSettings((prev) => ({
+              ...prev,
+              ...decoded.settings,
+            }));
+          }
+        }
+      } catch (err) {
+        console.warn('Could not decode URL on change', err);
+      }
+    };
+
+    window.addEventListener('hashchange', handleUrlChange);
+    window.addEventListener('popstate', handleUrlChange);
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
 
   // Handle updating an operator row
   const handleUpdateOperator = (
@@ -143,26 +175,45 @@ export default function App() {
       localStorage.removeItem(STORAGE_DATA_KEY);
       localStorage.removeItem(STORAGE_SETTINGS_KEY);
       // Clear hash from URL
-      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+      const cleanBase = window.location.href.split('#')[0];
+      window.history.replaceState(null, '', cleanBase);
     } catch (e) {
-      console.error(e);
+      console.warn(e);
     }
   };
 
-  // Handle sharing the current modified link
-  const handleShareLink = () => {
+  // Handle sharing the current modified link (with safe clipboard copy)
+  const handleShareLink = async () => {
     const url = getShareableUrl(commissionData, settings);
-    try {
-      navigator.clipboard.writeText(url);
-    } catch (e) {
-      // Fallback for older browsers
-      const input = document.createElement('input');
-      input.value = url;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
+    let copied = false;
+
+    if (navigator?.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        copied = true;
+      } catch {
+        copied = false;
+      }
     }
+
+    if (!copied) {
+      try {
+        const input = document.createElement('textarea');
+        input.value = url;
+        input.style.position = 'fixed';
+        input.style.opacity = '0';
+        input.style.left = '-9999px';
+        document.body.appendChild(input);
+        input.focus();
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        copied = true;
+      } catch (err) {
+        console.warn('Clipboard fallback failed', err);
+      }
+    }
+
     setShowShareToast(true);
     setTimeout(() => setShowShareToast(false), 3500);
   };
