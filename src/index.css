@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: #F8F5EF;
+    color: #2A3A52;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.font-display {
+  font-family: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+}
+
+.font-body {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(74, 134, 217, 0.28);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 134, 217, 0.45);
+}
+
+/* Table inputs */
+input.ci {
+  width: 100%;
+  height: 36px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 12px;
+  font-family: inherit;
+  padding: 0 2px;
+  color: #071B3A;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+input.ci:focus {
+  background: rgba(74, 134, 217, 0.12);
+  border-radius: 4px;
+  outline: 2px solid #4A86D9;
+}
+
+input.ni {
+  width: 100%;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  font-family: inherit;
+  padding: 0 10px;
+  font-weight: 600;
+  color: #071B3A;
+  transition: all 0.15s ease;
+}
+
+input.ni:focus {
+  background: rgba(74, 134, 217, 0.08);
+  border-radius: 4px;
+  outline: 2px solid #4A86D9;
+}
+
+input:disabled.ci,
+input:disabled.ni {
+  opacity: 1;
+  -webkit-text-fill-color: #071B3A;
+  pointer-events: none;
+  user-select: text;
+}
